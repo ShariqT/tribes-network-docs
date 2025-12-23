@@ -12,7 +12,8 @@ export default defineConfig({
         {
           label: 'Manifesto',
           items: [
-            { label: 'Why Tribes is needed', slug: 'manifesto'}
+            { label: 'Why Tribes is needed', slug: 'manifesto'},
+            { label: "The Tribes ecosystem", slug: 'ecosystem'}
           ]
         },
 				{
