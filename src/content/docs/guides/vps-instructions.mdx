@@ -1,0 +1,153 @@
+---
+title: Launch a Tribes Server on a VPS
+description: Learn how to setup your own Tribes server on a Ubuntu VPS
+---
+
+import { Aside, Code } from '@astrojs/starlight/components';
+import serviceFile from '../../../example_service.txt?raw'
+
+You can run a Tribes server on anything. We'll have upcoming guides on how to run
+the server on Raspberry Pi. For now, let's see how you can setup a Tribes server on a VPS (Virtual Private Server). You can get access to a VPS via services like [Hostinger](https://www.hostinger.com/) and [Vultr](https://www.vultr.com). These instructions are for setting up your Tribes server on an VPS running Ubuntu v25.10 for 64-bit machines. 
+
+## Prerequistes
+<Aside type="note">
+I'm not going to go over creating user accounts and locking down a Linux server. 
+You can find more information about that via other resources. 
+</Aside>
+
+First, thing you will need to disable ufw -- the firewall program -- if it is running. 
+You can do that by typing `sudo disable ufw` in the terminal. 
+
+Next, you will need to make sure that firewalld is enabled and running. 
+
+```code
+sudo systemctl enable firewalld
+sudo systemctl start firewalld
+sudo systemctl status firewalld
+```
+You should see a message saying that firewalld is enabled and active. Now that you have the firewall running, let's open up port 80 and port 443. 
+
+```code
+sudo firewall-cmd --permanent --zone=public --add-service=http
+sudo firewall-cmd --permanent --zone=public --add-service=https
+```
+
+To save the changes to your firewall, run 
+```code
+sudo systemctl reload firewalld
+sudo systemctl restart firewalld
+```
+When you run this command: `sudo firewall-cmd --list-all` then you should see the http and https in the "services" section of the output.
+Now, you will download [Caddy](https://caddyserver.com/) to act as a proxy server. This server will take in the requests and pass them along to the Tribes server listening on another port.
+
+```code
+sudo apt-get install caddy
+```
+the configuration file for the Caddy server is located at `/etc/caddy/Caddyfile`. Let's make sure that the Caddy server is working correctly before we make anymore changes.
+
+```code
+sudo systemctl start caddy
+```
+
+Let's also make sure that we enable caddy to run on startup. 
+
+```code
+sudo systemctl enable caddy
+```
+
+If you go to `http://<your.server.ip.address>`, you should see the Caddy startup page. This page just lets you know that the server is working correctly. 
+
+At this point, you can either use the domain name or the IP address to confirgure your Caddy server. If you have an domain, you can add this to the Caddyfile, replacing the `:80`. Now, restart and reload the Caddy server by running 
+
+```code
+sudo systemctl reload caddy
+sudo systemctl restart caddy
+```
+
+Now, if you go to `https:<your-domain-name>`, you should see the same Caddy startup page. You now notice that you have a free SSL certificate via ZeroSSL. Very nice. 
+
+If you do not have a domain name, you can just use your IP address. You will have to use a service like, [sslip.io](https://sslip.io/) that will generate a domain that will automatically resolve to your IP address.
+
+Using sslip.io is very easy. Just replace the `:80` in the Caddyfile with your IP address -- separated by dashes -- with sslip.io as the TLD. If your IP address is 127.0.0.1 then the sslip.io domain would be 127-0-0-1.sslip.io. 
+
+## Setting up the Tribes Server
+Now that this done, we need to make a folder for the Tribes server. You can do this anywhere on the server, but for this example,
+we'll make space in the `/var` folder: `mkdir -p /var/www/tribes && cd /var/www/tribes`. Let's download the Tribes server from its git repo by running, `git clone https://github.com/ShariqT/tribes-python-server.git`
+in the terminal.
+
+The Tribes server runs on Python; you will need version 3.14 or higher. To install Python, you will need the following:`sudo apt-get install python3.14`.
+Secondly, you will need to get the [uv package manager](https://docs.astral.sh/uv/): `sudo curl -LsSf https://astral.sh/uv/install.sh | sh`.
+
+Lastly, the Tribes server needs a Redis as a database. You can use either a [Redis Cloud instance
+](https://redis.io/cloud/) or download an instance on your server. We will do the latter on this guide.
+
+The standard version of Redis does not have the neccessary extensions for the Tribes server to work. The easiest way to get the correct 
+version of Redis is to use [Docker](https://www.docker.com/). The following commands will install Docker and pull the Redis-stack Docker image, which is compatible with the Tribes server.
+
+```code
+apt-get install docker.io
+docker pull redis/redis-stack
+```
+
+Next, lets create a systemd service file for Redis. Systemd will keep track of the Redis server and will restart the Docker container, if needed. Change directory to 
+`/etc/systemd/system`. Open nano and we will create a new file called, `redis.service`. This is the contents of that new service file. 
+
+<Code code={serviceFile} title="redis.service" />
+
+Change the permissions on the file you just created, by running:`chmod +x /etc/systemd/system/redis.service`. This will allow 
+systemd start and stop the newly created service.
+
+Now you can start the redis server using the following command: `systemctl start redis.service`. 
+
+The last step, you need to do is download the Python dependencies that Tribes needs to run. Change into the directory that you downloaded 
+the git repo into. In this example, this would be: `/var/www/tribes/tribes-python-server`. 
+
+Once you are in that directory, run the following: `uv sync`. This will launch a barrage of messages in the terminal while the neccessary packages
+are installed. 
+
+# Generating keys, setting up environment variables
+
+Each Tribes server will need a PGP keypair. This is how your server will be known throughout the Tribes network.
+Generating these keys are done by the `keymaster.py` file. Since, we downloaded the Tribes server software into the
+`/var/www/tribes/tribes-python-server` folder. Change into this directory and run the following:
+
+<Code code={`uv run keymaster.py <path to where you want your keys stored> <username> <email>
+`} title="terminal" />
+
+Modify the `example.env` file to fit the specifics of your server. After you do so, change the name of the file to just `.env`, by running ```mv example.env .env```
+
+Now let's check to make sure we can connect to the Redis DB
+<Code code={`uv run server.py --check-db-connection`} title="terminal" />
+
+If you are successfully connected to the db, then run 
+
+<Code code={`uv run server.py --setup-db`} title="terminal" />
+
+After running this command, you are now able to add your public key as a superuser to this server. This means that you will total control and final authority on who is blocked and who gets access to this server. 
+
+Open your Tribes client and click the **Settings** button. Click on the **Download Public Key file** option on the left-hand side. 
+
+You will need to [rsync](https://linux.die.net/man/1/rsync) or ftp your public key file over to your server. Once that is
+done, you can navigate to where you downloaded the Tribes code. In this example, that is `/var/www/tribes/tribes-python-server` and run 
+<Code code={` uv run server.py --add-superuser <path/to/your public key file>`} title="terminal" />
+
+Now all we need to do is run the Tribes server. Create a new systemd service file for 
+your server to run on. The first command will move the newly created service file to the correct folder for systemd to recognize it.
+
+<Code code={`mv /var/www/tribes/tribes-python-server/tribes.service /etc/systemd/system/tribes.service`} title="terminal" />
+
+After that, you need to make sure that service file has execution permissions.
+<Code code={`chmod +x /etc/systemd/system/tribes.service`} title="terminal" />
+
+The last thing we need to do this set your Caddy server to be used as proxy. Open up the Caddyfile at `/etc/caddy/Caddyfile`. 
+By default, the [`PORT` environment variable](/guides/environment-variables) is set to `8000` by default. You can set this to whatever port you want. In Caddy,
+the `reverse_proxy` command is what is needed to turn Caddy into a proxy server. 
+
+Now reload and restart the service. 
+
+```code
+systemctl reload caddy
+systemctl start caddy
+```
+
+Now you should be able to go do the domain of the server and see the words, "ok.computer". This is the sign that your Tribes server is ready to start taking connections. 

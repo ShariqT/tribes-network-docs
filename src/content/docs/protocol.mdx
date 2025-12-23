@@ -1,0 +1,44 @@
+---
+title: Tribes Server Protocol
+description: How does the Tribes Server Protocol work? Learn about the keys to security and privacy in the protocol design.
+---
+import { Image } from 'astro:assets';
+import imgOverview from "../../assets/tribes-protocol-timeline.png"
+
+
+The Tribes Server Protocol is how Tribes clients and servers communicate with one another to keep 
+information private and secure. Below is a timeline diagram of how the protocol works. 
+
+<Image src={imgOverview} alt="Picture of the how requests are structured with the Tribes network" />
+
+## Protocol Explained
+
+**Step 0:**
+A Tribes client generates the PGP public/private keypair. This is how you will be known throughout the 
+network. [PGP is a very strong encryption scheme and has been battled-tested for over 30 years. You can read
+more about it works](https://www.sentinelone.com/cybersecurity-101/cybersecurity/what-is-pgp-encryption/), but the gist of it is this: you can share your public key, but keep your private key
+private. If someone gets your private key, then for all intents and purposes, they are "you" on the Tribes network.
+
+**Step 1:** 
+The Tribes client will send your public key to the Tribes server that you want to connect with. Tribes servers can either be in
+open or closed status. Open status means that the Tribes server will accept anyone connecting. These servers
+do not come with a chat option because chats are ONLY reserved for members. 
+
+**Step 2:**
+Server sends the openness status back to the client. Once the servers send back the openness status, client
+has a decision to make. If the server is open, then the client can make a request to the server to get all 
+available server commands (3a). If the server is not open, then the client will need send the public key signature
+to make sure that key is a member of the server. 
+
+**Step 3:**
+Once, the server has established that the public key signature is a member of the server, the client can
+make a request to see all of the server commands (3a). 
+
+**Step 4:**
+Tribes servers have a limited set of server commands -- `/welcome`, which displays the welcome message; `/topics`, 
+which displays the posted topics on the server; and `/chat`, which displays the chat. Each time a client
+wants to issue a command to the server, the client MUST send the public key.
+
+
+
+

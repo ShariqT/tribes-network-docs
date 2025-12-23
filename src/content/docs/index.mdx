@@ -1,40 +1,34 @@
 ---
-title: Welcome to Starlight
+title: "Tribes: the new social web"
 description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+# template: splash # Remove or comment out this line to display the site sidebar on this page.
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  # tagline: Congrats on setting up a new Starlight project!
   image:
-    file: ../../assets/houston.webp
+    # file: ../../assets/tribes-logo.png
+    html: <svg width="200" height="200" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="fill-primaryColor"><path d="M11.3709 9.59273L8.77816 7L1 14.7782L3.59272 17.3709L11.3709 9.59273Z" /><path d="M15.2218 7L23 14.7782L20.424 17.3542L15.2218 12.152L10.0197 17.3542L7.44367 14.7782L15.2218 7Z" /></svg>
+
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Learn more
+      link: /ecosystem
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
-      variant: minimal
+    # - text: Read the Starlight docs
+    #   link: https://starlight.astro.build
+    #   icon: external
+    #   variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, LinkCard, CardGrid } from '@astrojs/starlight/components';
 
 ## Next steps
-
-<CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+Tribes is an open source project that seeks to give people the ability to conversate privately and 
+safely. How can you get started using Tribes? You can buy the Tribes client to discover a Tribes server that covers your interests
+or start your own Tribes server where people can congregate. 
+	<Card title="Get Tribes client" icon="add-document">
+		[Buy the Tribes client for Windows and Linux](https://www.google.com). Mac support is coming soon.
 	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
+	<Card title="Setup your own Tribes server" icon="add-document">
+		[Read the server guide to setup your own Tribes server.](./guides/vps-instructions)
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
-</CardGrid>
+	
+	

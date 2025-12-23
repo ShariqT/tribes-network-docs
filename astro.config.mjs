@@ -6,19 +6,30 @@ import starlight from '@astrojs/starlight';
 export default defineConfig({
 	integrations: [
 		starlight({
-			title: 'My Docs',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/withastro/starlight' }],
+			title: 'Tribes',
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ShariqT/tribes-python-server' }],
 			sidebar: [
+        {
+          label: 'Manifesto',
+          items: [
+            { label: 'Why Tribes is needed', slug: 'manifesto'}
+          ]
+        },
 				{
 					label: 'Guides',
 					items: [
 						// Each item here is one entry in the navigation menu.
-						{ label: 'Example Guide', slug: 'guides/example' },
+						{ label: 'Launching a Tribes server', slug: 'guides/vps-instructions' },
+            { label: 'Environment variables', slug: 'guides/environment-variables' },
+
 					],
 				},
+        
 				{
-					label: 'Reference',
-					autogenerate: { directory: 'reference' },
+					label: 'Protocol',
+          items: [
+            { label: 'Learn the Tribes Protocol', slug: 'protocol'}
+          ]
 				},
 			],
 		}),
