@@ -20,7 +20,8 @@ export default defineConfig({
 					label: 'Guides',
 					items: [
 						// Each item here is one entry in the navigation menu.
-						{ label: 'Launching a Tribes server', slug: 'guides/vps-instructions' },
+
+						{ label: 'Launching a Tribes server', slug: 'guides/launch-on-railway' },
             { label: 'Environment variables', slug: 'guides/environment-variables' },
 
 					],
