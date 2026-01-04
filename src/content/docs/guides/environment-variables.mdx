@@ -7,19 +7,15 @@ This is a breakdown of the neccessary environment variables needed to run a Trib
 All of these environment variables can be found in the `example.env` file in the Tribes repo.
 
 ## The variables
-| Variable Name | Description | Default Value |
+| Variable Name | Description
 |---| --- | --- |
-| REDIS_HOST | Redis DB hostname | localhost |
-| REDIS_PORT | Redis DB port | 6379 |
-| REDIS_DB | Redis DB number | 0 |
-| REDIS_USERNAME | Redis DB username | an empty string |
-| REDIS_PASSWORD | Redis DB password | an empty string |
-| SERVER_PUBLIC_KEY | Location of the server's public key | path/to/public.key |
-| SERVER_PRIVATE_KEY | Location of the server's private key | path/to/private.key |
-| PUBLIC_ACCESS | Tribes privacy setting; 0 means the server is private; 1 means the server is public | 0 |
-| OTP_KEY | Secret value for the OTP settings. This should be base32 encoded | myotpkey |
-| APP_KEY | Secret value for Flask server for encrypting cookies; this should be base32 encoded | mysecretappkey |
-| ADMIN_KEY | Location of the admin's public key on the server | path/to/public.key |
+| REDIS_HOST | Redis DB hostname
+| REDIS_PORT | Redis DB port 
+| REDIS_DB | Redis DB number
+| REDIS_USERNAME | Redis DB username 
+| REDIS_PASSWORD | Redis DB password
+| PUBLIC_ACCESS | Tribes privacy setting; 0 means the server is private; 1 means the server is public
+| APP_KEY | Secret value for Flask server for encrypting cookies; this should be base32 encoded 
 | PORT | Port where the Tribes server will run | 8000 |
 
 
