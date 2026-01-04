@@ -7,7 +7,7 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			title: 'Tribes',
-			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ShariqT/tribes-python-server' }],
+			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/ShariqT/tribes-server-cloud' }],
 			sidebar: [
         {
           label: 'Manifesto',
